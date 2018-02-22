@@ -21,7 +21,7 @@ import json
 import math
 import random
 import re
-import StringIO
+from io import StringIO
 import sys
 import time
 
@@ -76,7 +76,6 @@ job_bucket = config["jobBucket"]
 region = config["region"]
 lambda_memory = config["lambdaMemory"]
 concurrent_lambdas = config["concurrentLambdas"]
-
 #all_keys = s3_client.list_objects(Bucket=bucket, Prefix=config["prefix"])["Contents"]
 
 # Fetch all the keys that match the prefix
@@ -161,10 +160,10 @@ def invoke_lambda(batches, m_id):
         )
     out = eval(resp['Payload'].read())
     mapper_outputs.append(out)
-    print "mapper output", out
+    print("mapper output", out)
 
 # Exec Parallel
-print "# of Mappers ", n_mappers 
+print("# of Mappers ", n_mappers)
 pool = ThreadPool(n_mappers)
 Ids = [i+1 for i in range(n_mappers)]
 invoke_lambda_partial = partial(invoke_lambda, batches)
@@ -179,7 +178,7 @@ while mappers_executed < n_mappers:
 pool.close()
 pool.join()
 
-print "all the mappers finished"
+print("all the mappers finished")
 
 # Delete Mapper function
 l_mapper.delete_function()
@@ -212,11 +211,11 @@ while True:
     keys = [jk["Key"] for jk in job_keys]
     total_s3_size = sum([jk["Size"] for jk in job_keys])
     
-    print "check to see if the job is done"
+    print("check to see if the job is done")
 
     # check job done
     if job_id + "/result" in keys:
-        print "job done"
+        print("job done")
         reducer_lambda_time += float(s3.Object(job_bucket, job_id + "/result").metadata['processingtime'])
         for key in keys:
             if "task/reducer" in key:
@@ -240,13 +239,13 @@ lambda_cost = total_lambda_secs * 0.00001667 * lambda_memory/ 1024.0
 s3_cost =  (s3_get_cost + s3_put_cost + s3_storage_hour_cost)
 
 # Print costs
-print "Reducer L", reducer_lambda_time * 0.00001667 * lambda_memory/ 1024.0
-print "Lambda Cost", lambda_cost
-print "S3 Storage Cost", s3_storage_hour_cost
-print "S3 Request Cost", s3_get_cost + s3_put_cost 
-print "S3 Cost", s3_cost 
-print "Total Cost: ", lambda_cost + s3_cost
-print "Total Lines:", total_lines 
+print("Reducer L", reducer_lambda_time * 0.00001667 * lambda_memory/ 1024.0)
+print("Lambda Cost", lambda_cost)
+print("S3 Storage Cost", s3_storage_hour_cost)
+print("S3 Request Cost", s3_get_cost + s3_put_cost)
+print("S3 Cost", s3_cost)
+print("Total Cost: ", lambda_cost + s3_cost)
+print("Total Lines:", total_lines)
 
 
 # Delete Reducer function

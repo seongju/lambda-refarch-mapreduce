@@ -1,7 +1,7 @@
 {
       "bucket": "big-data-benchmark",
       "prefix": "pavlo/text/1node/uservisits/",
-      "jobBucket": "smallya-useast-1",
+      "jobBucket": "seongju-biglambda-s3",
       "region": "us-east-1",
       "lambdaMemory": 1536,
       "concurrentLambdas": 100,
