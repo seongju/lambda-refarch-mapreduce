@@ -1,0 +1,23 @@
+{
+      "bucket": "big-data-benchmark",
+      "prefix": "pavlo/text/1node/uservisits/",
+      "jobBucket": "seongju-biglambda-s3",
+      "region": "us-east-1",
+      "lambdaMemory": 1536,
+      "concurrentLambdas": 100,
+      "mapper": {
+            "path": "mapper/mapper.go",
+            "bin": "map",
+            "zip": "mapper.zip"
+        },
+      "reducer":{
+            "path": "reducer/reducer.go",
+            "bin": "reduce",
+            "zip": "reducer.zip"
+        },
+      "reducerCoordinator":{
+            "path": "reducer-coord/reducercoord.go",
+            "bin": "coordinateReducers",
+            "zip": "reducerCoordinator.zip"
+        }
+} 
